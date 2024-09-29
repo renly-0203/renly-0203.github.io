@@ -11,7 +11,10 @@ const toHome = () => {
   <div class="main">
     <p class="welcome">欢迎来到任刘洋的世界</p>
     <el-button size="large" type="primary" class="btn" @click="toHome">
-      出发<el-icon class="el-icon--right"><DArrowRight /></el-icon>
+      出发
+      <el-icon class="el-icon--right">
+        <DArrowRight />
+      </el-icon>
     </el-button>
   </div>
 </template>
@@ -30,6 +33,12 @@ const toHome = () => {
   position: absolute;
   left: 510px;
   top: 80px;
+  text-shadow: 0 -5px 10px rgba(255, 255, 255, 0.5),
+    /* 文字的光辉效果 */
+    0 10px 20px rgba(255, 255, 255, 0.3),
+    /* 文字下方的模糊光源 */
+    0 15px 30px rgba(255, 255, 255, 0.2);
+  /* 更远的模糊光源 */
 }
 
 .btn {
@@ -48,6 +57,7 @@ const toHome = () => {
   from {
     transform: translateX(0);
   }
+
   to {
     transform: translateX(15px);
   }
