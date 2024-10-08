@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import Hello from "@/pages/Hello.vue";
 import Home from "@/pages/Home.vue";
 import PhotoAlbum from "@/pages/PhotoAlbum.vue";
+import RotateNews from "@/pages/RotateNews.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -19,6 +20,11 @@ const router = createRouter({
       path: '/home',
       name: "Home",
       component: Home,
+    },
+    {
+      path: '/rotate-news',
+      name: "RotateNews",
+      component: RotateNews,
     },
     {
       path: '/photo-album',
