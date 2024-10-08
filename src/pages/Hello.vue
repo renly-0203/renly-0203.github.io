@@ -1,10 +1,14 @@
 <script setup lang="ts">
 import { DArrowRight } from "@element-plus/icons-vue";
-import router from "../router";
+import router from "@/router";
 
 const toHome = () => {
-  router.replace("home");
+  router.push("home");
 };
+
+const toPhoto = () => {
+  router.push("photo-album");
+}
 </script>
 
 <template>
@@ -12,6 +16,13 @@ const toHome = () => {
     <p class="welcome">欢迎来到任刘洋的世界</p>
     <el-button size="large" type="primary" class="btn" @click="toHome">
       出发
+      <el-icon class="el-icon--right">
+        <DArrowRight />
+      </el-icon>
+    </el-button>
+
+    <el-button type="primary" class="photo" @click="toPhoto">
+      相册
       <el-icon class="el-icon--right">
         <DArrowRight />
       </el-icon>
@@ -53,13 +64,24 @@ const toHome = () => {
   animation: translate 0.8s infinite ease-out;
 }
 
+.photo {
+  transition: all 0.5s;
+  position: absolute;
+  right: 30px;
+  top: 100px;
+}
+
+.photo:hover .el-icon {
+  animation: translate 0.8s infinite ease-out;
+}
+
 @keyframes translate {
   from {
     transform: translateX(0);
   }
 
   to {
-    transform: translateX(15px);
+    transform: translateX(50%);
   }
 }
 </style>
