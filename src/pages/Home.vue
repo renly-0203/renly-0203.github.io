@@ -1,5 +1,8 @@
 <script setup lang="ts">
+import { useRouter } from 'vue-router';
 import { reactive } from "vue";
+
+const router = useRouter();
 
 const data = reactive([
   {
@@ -63,6 +66,16 @@ const data = reactive([
     content: "白天蝴蝶rush B, 晚上rush蝴蝶B",
   },
 ]);
+
+const handleDetail = (current: any) => {
+  router.push({
+    name: 'RotateNews',
+    query: {
+      current: JSON.stringify(current),
+      data: JSON.stringify(data)
+    }
+  });
+}
 </script>
 
 <template>
@@ -73,6 +86,7 @@ const data = reactive([
         :style="{ width: item?.width }"
         v-for="item in data"
         :key="item?.id"
+        @click="handleDetail(item)"
       >
         <div class="item-title">{{ item.title }}</div>
         <div class="item-content">{{ item.content }}</div>

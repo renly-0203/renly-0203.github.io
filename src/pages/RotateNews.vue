@@ -1,6 +1,41 @@
 <script setup lang='ts'>
 import { onBeforeUnmount, onMounted, ref, reactive } from 'vue';
+import { useRoute } from 'vue-router';
+
+const route = useRoute();
+
+const rotateCube = ref(0)
 const rotate = ref(-45)
+
+const listData: any[] = reactive([])
+
+const listStyle = [
+  {
+    class: 'content-item-one',
+    rotateY: "0",
+    translate: 48,
+    show: true
+  },
+  {
+    class: 'content-item-two',
+    rotateX: "-90",
+    translate: 48,
+    show: false
+  },
+  {
+    class: 'content-item-three',
+    rotateY: "180",
+    rotateZ: "180",
+    translate: 48,
+    show: false
+  },
+  {
+    class: 'content-item-four',
+    rotateX: "90",
+    translate: 48,
+    show: false
+  },
+]
 
 const styleList = [
   {
@@ -30,79 +65,63 @@ const styleList = [
 ]
 const dataList: any[] = reactive([])
 
-const data = [
-  {
-    id: 1,
-    title: "《素履之往》",
-    content: "所谓无底深渊，下去，也是前程万里。",
-  },
-  {
-    id: 2,
-    title: "《1Q84》",
-    content: "超过一定的年龄之后，所谓人生，无非是一个不断丧失的过程而已。",
-  },
-  {
-    id: 3,
-    title: "《深海》",
-    content: "希望你今后的每一次笑，都是真心的。",
-  },
-  {
-    id: 4,
-    title: "erevus",
-    content: "小时候，我妈说我的手指长，将来能当钢琴家，然后我成了码农",
-  },
-  {
-    id: 5,
-    title: "《青春杂货铺》",
-    content: "恋爱本质不是走向婚姻，而是探究最真实的自己。",
-  },
-  {
-    id: 6,
-    title: "王佩",
-    content: "原以为一切早已结束，没想到一切才是刚刚开始。",
-  },
-  {
-    id: 7,
-    title: "《撒野》",
-    content: "想跟我谈恋爱，还是想跟我谈个恋爱？",
-  },
-  {
-    id: 8,
-    title: "《人生的智慧》",
-    content: "哪怕一百个愚笨的人在一起聚会，也无法产生一个智慧的人。",
-  },
-  {
-    id: 9,
-    title: "《早晨从中午开始》",
-    content: "最渺小的人常关注着成绩和荣耀；最伟大的人常沉浸于创造和劳动。",
-  },
-  {
-    id: 10,
-    title: "cs2蝴蝶刀",
-    content: "白天蝴蝶rush B, 晚上rush蝴蝶B",
-  },
-];
-
 const handleWheel = (e: any) => {
   if (e.deltaY > 0) {
     rotate.value -= 90
+    rotateCube.value += 90
   } else {
     rotate.value += 90
+    rotateCube.value -= 90
   }
+}
+
+const getList = (data: any, startId: number, count: number) => {
+  // 1. 找到目标元素的起始索引
+  const startIndex = data.findIndex((item: { id: number }) => item?.id === startId);
+
+  // 如果目标 ID 不存在，直接返回空数组
+  if (startIndex === -1) return [];
+
+  // 2. 从 startIndex 开始取 count 个元素（可能会超出数组末尾）
+  const part1 = data.slice(startIndex, startIndex + count);
+
+  // 3. 检查是否取够 count 个元素，如果不足，从头部再取剩余的元素
+  if (part1.length < count) {
+    const remainingCount = count - part1.length;
+    const part2 = data.slice(0, remainingCount);  // 从头开始取剩余的元素
+    return part1.concat(part2);
+  }
+
+  return part1;  // 取够了，直接返回
 }
 
 onMounted(() => {
   // 监听整个页面的滚轮事件
   window.addEventListener('wheel', handleWheel);
-  data.forEach((item, index) => {
-    if (dataList.length >= 4) {
-      return
-    }
-    dataList.push({
-      ...item,
-      ...styleList[index]
+  const { data, current }: any = route?.query
+
+  if (data && current) {
+    const list = getList(JSON.parse(data), JSON.parse(current).id, 4)
+
+    list.forEach((item: any, index: number) => {
+      if (dataList.length >= 4) {
+        return
+      }
+      dataList.push({
+        ...item,
+        ...styleList[index]
+      })
     })
-  })
+
+    const removedElement = list.splice(2, 1);
+    const format = [...list, removedElement[0]]
+    format.forEach((item: any, index: number) => {
+      listData.push({
+        ...item,
+        ...listStyle[index]
+      })
+    })
+  }
 });
 
 onBeforeUnmount(() => {
@@ -113,16 +132,27 @@ onBeforeUnmount(() => {
 
 <template>
   <div class="main">
-    <div class="content"></div>
-    <div class="detail" :style="{transform: `rotate(${rotate}deg)`}">
+    <div class="content">
+      <div class="cube" :style="{ transform: `rotateX(${rotateCube}deg)` }">
+        <div v-for="item in listData" :key="item.id" :class="item.class" :style="{
+          transform:
+            `rotateX(${item.rotateX ? item.rotateX : 0}deg) 
+              rotateY(${item.rotateY ? item.rotateY : 0}deg) 
+              rotateZ(${item.rotateZ ? item.rotateZ : 0}deg) 
+              translateZ(${item.translate}vh)`
+        }">
+          <div class="item-title">{{ item.title }}</div>
+          <div class="item-content">{{ item.content }}</div>
+        </div>
+      </div>
+    </div>
+    <div class="detail" :style="{ transform: `rotate(${rotate}deg)` }">
       <div v-for="item in dataList" :key="item.id" :class="item.class">
-        <div 
-          :style="{
-            transform: `rotate(${item.rotate}deg)`, 
-            top: `${item.top}px`, 
-            left: `${item.left}px`
-          }"
-        >
+        <div :style="{
+          transform: `rotate(${item.rotate}deg)`,
+          top: `${item.top}px`,
+          left: `${item.left}px`
+        }">
           <div class="item-title">{{ item.title }}</div>
           <div class="item-content">{{ item.content }}</div>
         </div>
@@ -144,10 +174,40 @@ onBeforeUnmount(() => {
 
 .content {
   width: 40vw;
-  height: 98vh;
-  background-color: rgba(0, 0, 0, .6);
+  height: 95vh;
   position: absolute;
   left: 5%;
+  overflow: hidden;
+  perspective: 3000px;
+}
+
+.cube {
+  width: 40vw;
+  height: 90vh;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: all .8s;
+}
+
+/* 立方体的每个面 */
+.content-item-one,
+.content-item-two,
+.content-item-three,
+.content-item-four {
+  padding: 0 100px;
+  box-sizing: border-box;
+  position: absolute;
+  width: 40vw;
+  height: 90vh;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, .6);
+  backface-visibility: hidden;
+  /* 隐藏背面 */
+  /* 初始状态下隐藏所有面 */
 }
 
 .detail {
@@ -219,5 +279,4 @@ onBeforeUnmount(() => {
   color: #fff0f0;
   font-size: 20px;
 }
-
 </style>
