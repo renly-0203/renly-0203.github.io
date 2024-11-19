@@ -75,6 +75,10 @@ const handleWheel = (e: any) => {
   }
 }
 
+setInterval(() => {
+  handleWheel({deltaY: 1})
+}, 5000)
+
 const getList = (data: any, startId: number, count: number) => {
   // 1. 找到目标元素的起始索引
   const startIndex = data.findIndex((item: { id: number }) => item?.id === startId);

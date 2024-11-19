@@ -42,8 +42,8 @@ const toPhoto = () => {
   font-size: 30px;
   font-weight: bold;
   position: absolute;
-  left: 510px;
-  top: 80px;
+  left: 25vw;
+  top: 6vw;
   text-shadow: 0 -5px 10px rgba(255, 255, 255, 0.5),
     /* 文字的光辉效果 */
     0 10px 20px rgba(255, 255, 255, 0.3),
@@ -56,8 +56,8 @@ const toPhoto = () => {
   font-size: 26px;
   transition: all 0.5s;
   position: absolute;
-  left: 50px;
-  top: 400px;
+  left: 3vw;
+  top: 25vw;
 }
 
 .btn:hover .el-icon {
@@ -67,8 +67,8 @@ const toPhoto = () => {
 .photo {
   transition: all 0.5s;
   position: absolute;
-  right: 30px;
-  top: 100px;
+  right: 3vw;
+  top: 6vw;
 }
 
 .photo:hover .el-icon {

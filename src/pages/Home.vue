@@ -1,8 +1,11 @@
 <script setup lang="ts">
-import { useRouter } from 'vue-router';
-import { reactive } from "vue";
+import { useRouter } from "vue-router";
+import { reactive, ref } from "vue";
+import EditUser from "@/components/EditUser.vue";
 
 const router = useRouter();
+
+const drawer = ref(false);
 
 const data = reactive([
   {
@@ -62,20 +65,32 @@ const data = reactive([
   {
     id: 10,
     width: "48%",
-    title: "cs2蝴蝶刀",
-    content: "白天蝴蝶rush B, 晚上rush蝴蝶B",
+    title: "《彭小呆》",
+    content: "黎明前的黑暗，是最深不见底的黑暗。",
   },
 ]);
 
+const user = reactive({
+  name: "任刘洋",
+  age: 20,
+  gender: "男",
+  tel: "111",
+  email: "2223",
+});
+
+const handleEdit = () => {
+  drawer.value = true;
+};
+
 const handleDetail = (current: any) => {
   router.push({
-    name: 'RotateNews',
+    name: "RotateNews",
     query: {
       current: JSON.stringify(current),
-      data: JSON.stringify(data)
-    }
+      data: JSON.stringify(data),
+    },
   });
-}
+};
 </script>
 
 <template>
@@ -92,8 +107,41 @@ const handleDetail = (current: any) => {
         <div class="item-content">{{ item.content }}</div>
       </div>
     </div>
-    <div class="personal"></div>
+    <div class="personal">
+      <div class="person">
+        <div class="top">
+          <div>
+            <el-avatar size="large">{{ user?.name.charAt(0) }}</el-avatar>
+            <div class="name">{{ user?.name }}</div>
+          </div>
+          <el-button link type="primary" @click="handleEdit"> 编 辑 </el-button>
+        </div>
+        <div class="bottom">
+          <div>
+            <div>年龄：{{ user?.age }}</div>
+            <div>性别：{{ user?.gender }}</div>
+          </div>
+          <div>联系方式：{{ user?.tel }}</div>
+          <div>电子邮箱：{{ user?.email }}</div>
+        </div>
+      </div>
+      <div class="information">
+        <ul>
+          <li class="information-item" v-for="item in data" :key="item?.id">
+            {{ item?.title }}
+          </li>
+        </ul>
+      </div>
+    </div>
   </div>
+
+  <el-drawer
+    v-model="drawer"
+    title="修改用户"
+    style="background-color: rgb(20, 20, 20)"
+  >
+    <EditUser :data="user" />
+  </el-drawer>
 </template>
 
 <style scoped>
@@ -142,5 +190,72 @@ const handleDetail = (current: any) => {
   height: 90vh;
   background-color: rgba(0, 0, 0, 0.5);
   border-radius: 20px;
+  padding: 2vw;
+}
+
+.person,
+.information {
+  width: 100%;
+  border-radius: 10px;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 2vw;
+  box-sizing: border-box;
+}
+
+.person {
+  height: 40%;
+  margin-bottom: 2vw;
+  color: #ccc;
+}
+
+.information {
+  height: 55%;
+}
+
+.top {
+  height: 5vw;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.top > div {
+  display: flex;
+  align-items: center;
+}
+
+.name {
+  margin-left: 1vw;
+  font-size: 20px;
+}
+
+.bottom {
+  margin-top: 1vw;
+}
+
+.bottom > div {
+  width: 100%;
+  height: 2.5vw;
+  display: flex;
+  align-items: center;
+}
+
+.bottom > div > div {
+  width: 50%;
+}
+
+.information-item {
+  color: #ccc;
+  width: 100%;
+  height: 2vw;
+  margin-left: 1vw;
+}
+
+::v-deep .el-input__wrapper {
+  background-color: rgb(20, 20, 20);
+}
+
+::v-deep .el-input__inner {
+  color: #ccc;
 }
 </style>
